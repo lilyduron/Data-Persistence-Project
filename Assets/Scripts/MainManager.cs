@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,7 +19,10 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    public TextMeshProUGUI textMeshPro;
+   
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +40,13 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        // Retrieve the input data from the singleton
+        string userInput = DataManager.Instance.userInput;
+
+        // Display the data on the TextMeshPro component
+        textMeshPro.text = "Best Score : " + userInput + " : " + m_Points;
+
     }
 
     private void Update()
@@ -65,7 +76,8 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+       // ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = DataManager.Instance.userInput + " Score: " + m_Points;
     }
 
     public void GameOver()
@@ -73,4 +85,16 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
+   // [System.Serializable]
+   // class SaveData
+  //  {
+   //     public string playerName;
+  //  }
+
+   // void SaveName (string name)
+   // {
+   //    SaveData data = new SaveData();
+   //     data.playerName = name;
+   // }
 }

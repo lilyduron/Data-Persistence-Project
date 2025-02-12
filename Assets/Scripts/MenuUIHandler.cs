@@ -1,20 +1,34 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class MenuUIHandler : MonoBehaviour
 {
+
+    public TMP_InputField nameInputField;
+    public TextMeshProUGUI textMeshPro;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
     }
 
+      // Reference to the TMP input field
+
+    public void OnSubmitName()
+    {
+        // Store the entered name in the static variable
+        DataManager.Instance.userInput = nameInputField.text;
+    }
+
      public void StartNew()
     {
        SceneManager.LoadScene(1);
+       OnSubmitName();
     }
 
     public void Exit()
