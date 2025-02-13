@@ -15,10 +15,15 @@ public class DataManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);  // Prevents this object from being destroyed when loading new scenes
+            Debug.Log("DataManager instance created");
         }
         else
         {
+            Debug.LogWarning("DataManager instance already exists!");
             Destroy(gameObject);  // Destroy duplicate if it exists
         }
+
     }
+
+    
 }

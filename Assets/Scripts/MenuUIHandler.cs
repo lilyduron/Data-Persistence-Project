@@ -10,15 +10,20 @@ public class MenuUIHandler : MonoBehaviour
 
     public TMP_InputField nameInputField;
     public TextMeshProUGUI textMeshPro;
+    public TextMeshProUGUI scorePlayerText;
+    //public MainManager mainManager;
+    
+    
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+     //mainManager = GetComponent<MainManager>();  
+     //mainManager.UpdateHighScoreText();
+     //MainManager.Instance.UpdateHighScoreText();
+     
     }
 
-      // Reference to the TMP input field
-
+    // Reference to the TMP input field
     public void OnSubmitName()
     {
         // Store the entered name in the static variable
@@ -27,8 +32,9 @@ public class MenuUIHandler : MonoBehaviour
 
      public void StartNew()
     {
-       SceneManager.LoadScene(1);
        OnSubmitName();
+       SceneManager.LoadScene(1);
+      
     }
 
     public void Exit()
@@ -44,11 +50,5 @@ public class MenuUIHandler : MonoBehaviour
     public void BackMenu()
     {
        SceneManager.LoadScene(0);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

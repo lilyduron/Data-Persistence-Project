@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -19,9 +20,12 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    public TextMeshProUGUI textMeshPro;
+    public TextMeshProUGUI scorePlayerText;
+    private string filePath;               // File path to save and load the JSON file
+    private PlayerData playerData;         // The player data to be saved and loaded
+    
+    public string userInput;
    
-
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +46,16 @@ public class MainManager : MonoBehaviour
         }
 
         // Retrieve the input data from the singleton
-        string userInput = DataManager.Instance.userInput;
+        userInput = DataManager.Instance.userInput;
 
-        // Display the data on the TextMeshPro component
-        textMeshPro.text = "Best Score : " + userInput + " : " + m_Points;
+        // Path and name of the JSON file
+        filePath = Path.Combine(Application.persistentDataPath, "playerData.json");
+
+        // Load the saved high score and player name from the JSON file
+        LoadPlayerData();
+
+        // Display the current high score
+        UpdateHighScoreText();
 
     }
 
@@ -84,17 +94,66 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        SubmitScore();
     }
 
-   // [System.Serializable]
-   // class SaveData
-  //  {
-   //     public string playerName;
-  //  }
+   
 
-   // void SaveName (string name)
-   // {
-   //    SaveData data = new SaveData();
-   //     data.playerName = name;
-   // }
+    // Method to update the high score text on the screen
+    public void UpdateHighScoreText()
+    {
+        scorePlayerText.text = $"Best Score: {playerData.playerName}: {playerData.highScore}";
+        
+    }
+
+    // Call this method to submit the score
+    public void SubmitScore()
+    {
+        // Get the player name from the input field
+        string playerName = userInput;
+
+        // Check if the current score beats the high score
+        if (m_Points > playerData.highScore)
+        {
+            // Update the high score and player name
+            playerData.highScore = m_Points;
+            playerData.playerName = playerName;
+
+            // Save the new high score to the JSON file
+            SavePlayerData();
+
+            // Update the displayed high score text
+            UpdateHighScoreText();
+        }
+    }
+
+    [System.Serializable]
+    public class PlayerData
+    {
+        public string playerName;
+        public int highScore;
+    }
+
+     //Method to save player data to a JSON file
+    void SavePlayerData()
+    {
+        string json = JsonUtility.ToJson(playerData, true);
+        File.WriteAllText(filePath, json);
+    }
+
+    // Method to load player data from the JSON file
+    void LoadPlayerData()
+    {
+        if (File.Exists(filePath))
+        {
+            // Read the JSON data from the file and deserialize it into the PlayerData object
+            string json = File.ReadAllText(filePath);
+            playerData = JsonUtility.FromJson<PlayerData>(json);
+        }
+        else
+        {
+            // If the file doesn't exist, create a new PlayerData object with default values
+            playerData = new PlayerData { playerName = "  ", highScore = 0 };
+        }
+    }
 }
