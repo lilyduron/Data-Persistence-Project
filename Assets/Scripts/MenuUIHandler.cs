@@ -19,14 +19,22 @@ public class MenuUIHandler : MonoBehaviour
 
     void Start()
     {
-     // Path to the player data JSON file
+        // Get the active scene
+        Scene currentScene = SceneManager.GetActiveScene();
+     
+        // Path to the player data JSON file
         filePath = Path.Combine(Application.persistentDataPath, "playerData.json");
 
         // Load player data to get the best score
         LoadPlayerData();
 
-        // Update the best score text
-        UpdateHighScoreText();
+        // Check if the current scene is "Menu" or has index 0
+        if (currentScene.name == "Menu" || currentScene.buildIndex == 0)
+        {
+           // Update the best score text
+            UpdateHighScoreText();
+        }
+        
      
     }
 
@@ -71,7 +79,7 @@ public class MenuUIHandler : MonoBehaviour
         else
         {
             // If the file doesn't exist, create a default PlayerData
-            playerData = new MainManager.PlayerData { playerName = "NoName", highScore = 0 };
+            playerData = new MainManager.PlayerData { playerName = "  ", highScore = 0 };
         }
     }
 
