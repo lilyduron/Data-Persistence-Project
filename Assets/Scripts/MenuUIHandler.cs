@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,15 +12,21 @@ public class MenuUIHandler : MonoBehaviour
     public TMP_InputField nameInputField;
     public TextMeshProUGUI textMeshPro;
     public TextMeshProUGUI scorePlayerText;
-    //public MainManager mainManager;
+    private string filePath;
+    private MainManager.PlayerData playerData;
     
     
 
     void Start()
     {
-     //mainManager = GetComponent<MainManager>();  
-     //mainManager.UpdateHighScoreText();
-     //MainManager.Instance.UpdateHighScoreText();
+     // Path to the player data JSON file
+        filePath = Path.Combine(Application.persistentDataPath, "playerData.json");
+
+        // Load player data to get the best score
+        LoadPlayerData();
+
+        // Update the best score text
+        UpdateHighScoreText();
      
     }
 
@@ -50,5 +57,28 @@ public class MenuUIHandler : MonoBehaviour
     public void BackMenu()
     {
        SceneManager.LoadScene(0);
+    }
+
+    // Method to load player data from the JSON file
+    void LoadPlayerData()
+    {
+        if (File.Exists(filePath))
+        {
+            // Read the JSON data from the file and deserialize it into PlayerData object
+            string json = File.ReadAllText(filePath);
+            playerData = JsonUtility.FromJson<MainManager.PlayerData>(json);
+        }
+        else
+        {
+            // If the file doesn't exist, create a default PlayerData
+            playerData = new MainManager.PlayerData { playerName = "NoName", highScore = 0 };
+        }
+    }
+
+    // Method to update the best score text in the menu
+    void UpdateHighScoreText()
+    {
+        // Display the best score and player name
+        scorePlayerText.text = $"Best Score: {playerData.playerName}: {playerData.highScore}";
     }
 }
